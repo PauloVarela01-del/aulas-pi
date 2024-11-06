@@ -1,17 +1,19 @@
 package Varela.IF.eventos.controllers;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.mvc.method.annotation.ModelAndViewMethodReturnValueHandler;
 
 import Varela.IF.eventos.models.Evento;
 import Varela.IF.eventos.repository.EventoRepositoy;
+import ch.qos.logback.core.model.Model;
 
 @Controller
 @RequestMapping("/eventos")
@@ -43,6 +45,21 @@ public class EventosController {
 		ModelAndView mv = new ModelAndView("Eventos/lista");
 		mv.addObject("eventos", eventos);
 		return mv;
+	}
+	
+	@GetMapping("/{id}")
+	public ModelAndView detalhar(@PathVariable long id) {
+		ModelAndView md = new ModelAndView();
+		Optional<Evento> opt = er.findById(id);
+		if(opt.isEmpty()) {
+			md.setViewName("redirect:/eventos");
+			return md;
+		}
+		
+		md.setViewName("eventos/detalhes");
+		Evento eventos = opt.get();
+		
+		return md;
 	}
 }
 
