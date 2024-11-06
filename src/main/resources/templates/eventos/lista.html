@@ -21,17 +21,16 @@
 			  <th>Horário</th>
 			</tr>
 			</thead>
-		</table>
 			<tbody>
-				<tr>
-					<th> </th>
-					<th> </th>
-					<th> </th>
-					<th> </th>
-					<th> </th>
+				<tr th:each="e : ${eventos}">
+					<th th:text="${e.id}">1</th>
+					<th th:text="${e.nome}">Nome</th>
+					<th th:text="${e.local}">Local</th>
+					<th th:text="${e.data}">Data</th>
+					<th th:text="${e.horario}">Horário</th>
 			
 			</tbody>
-	
+	</table>
 	</div>
 
 </body>
