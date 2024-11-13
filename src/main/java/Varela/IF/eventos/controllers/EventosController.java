@@ -63,6 +63,9 @@ public class EventosController {
 		md.setViewName("eventos/detalhes");
 		Evento eventos = opt.get();
 		
+		List<Convidado> convidado = cr.findAll();
+		md.addObject("convidados", convidado);
+		
 		return md;
 	}
 	@PostMapping("/{idEvento}")
