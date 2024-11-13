@@ -11,7 +11,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
+import Varela.IF.eventos.models.Convidado;
 import Varela.IF.eventos.models.Evento;
+import Varela.IF.eventos.repository.ConvidadoRepository;
 import Varela.IF.eventos.repository.EventoRepositoy;
 import ch.qos.logback.core.model.Model;
 
@@ -21,6 +23,8 @@ public class EventosController {
 
 	@Autowired
 	private EventoRepositoy er;
+	@Autowired
+	private ConvidadoRepository cr;
 	
 	@GetMapping("/form")
 	public String form() {
@@ -60,6 +64,23 @@ public class EventosController {
 		Evento eventos = opt.get();
 		
 		return md;
+	}
+	@PostMapping("/{idEvento}")
+	public String salvarConvidade(@PathVariable long idEvento, Convidado convidado) {
+		
+		System.out.println("Id do evento: "+idEvento);
+		System.out.println(convidado);
+		
+		Optional<Evento> opt = er.findById(idEvento);
+		if(opt.isEmpty()) {
+			return "redirect:/eventos/{idEvento}";
+		}
+		
+		Evento evento = opt.get();
+		convidado.setEvento(evento);
+		
+		cr.save(convidado);
+		return "redirect:/evento/{id}";
 	}
 }
 
