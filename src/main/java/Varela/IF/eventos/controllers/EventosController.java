@@ -15,7 +15,6 @@ import Varela.IF.eventos.models.Convidado;
 import Varela.IF.eventos.models.Evento;
 import Varela.IF.eventos.repository.ConvidadoRepository;
 import Varela.IF.eventos.repository.EventoRepositoy;
-import ch.qos.logback.core.model.Model;
 
 @Controller
 @RequestMapping("/eventos")
@@ -25,24 +24,23 @@ public class EventosController {
 	private EventoRepositoy er;
 	@Autowired
 	private ConvidadoRepository cr;
-	
+
 	@GetMapping("/form")
 	public String form() {
 		System.out.println("Chame o formulário");
-		
-		
-				return "eventos/formEvento";
-		}
-		
-	@PostMapping("/eventos")
-		public String adicionar(Evento evento) {
-		
+
+		return "eventos/formEvento";
+	}
+
+	@PostMapping
+	public String adicionar(Evento evento) {
+
 		System.out.println(evento);
 		er.save(evento);
-		
-			return "eventos/evento-adicionado";
-		}
-	
+
+		return "eventos/evento-adicionado";
+	}
+
 	@GetMapping
 	public ModelAndView Listar() {
 		List<Evento> eventos = er.findAll();
@@ -50,40 +48,42 @@ public class EventosController {
 		mv.addObject("eventos", eventos);
 		return mv;
 	}
-	
+
 	@GetMapping("/{id}")
 	public ModelAndView detalhar(@PathVariable long id) {
 		ModelAndView md = new ModelAndView();
 		Optional<Evento> opt = er.findById(id);
-		if(opt.isEmpty()) {
+		if (opt.isEmpty()) {
 			md.setViewName("redirect:/eventos");
 			return md;
 		}
-		
+
 		md.setViewName("eventos/detalhes");
-		Evento eventos = opt.get();
-		
+		Evento evento = opt.get();
+
 		List<Convidado> convidado = cr.findAll();
-		md.addObject("convidados", convidado);
 		
+		md.addObject("evento", evento);
+		md.addObject("convidados", convidado);
+
 		return md;
 	}
+
 	@PostMapping("/{idEvento}")
-	public String salvarConvidade(@PathVariable long idEvento, Convidado convidado) {
-		
-		System.out.println("Id do evento: "+idEvento);
+	public String salvarConvidade(@PathVariable Long idEvento, Convidado convidado) {
+
+		System.out.println("Id do evento: " + idEvento);
 		System.out.println(convidado);
-		
+
 		Optional<Evento> opt = er.findById(idEvento);
-		if(opt.isEmpty()) {
-			return "redirect:/eventos/{idEvento}";
+		if (opt.isEmpty()) {
+			return "redirect:/eventos";
 		}
-		
+
 		Evento evento = opt.get();
 		convidado.setEvento(evento);
-		
+
 		cr.save(convidado);
-		return "redirect:/evento/{id}";
+		return "redirect:/eventos/{idEvento}";
 	}
 }
-
